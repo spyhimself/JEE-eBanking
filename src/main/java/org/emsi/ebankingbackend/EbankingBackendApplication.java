@@ -1,9 +1,11 @@
 package org.emsi.ebankingbackend;
 
+import org.emsi.ebankingbackend.entities.AccountOperation;
 import org.emsi.ebankingbackend.entities.CurrentAccount;
 import org.emsi.ebankingbackend.entities.Customer;
 import org.emsi.ebankingbackend.entities.SavingAccount;
 import org.emsi.ebankingbackend.enums.AccountStatus;
+import org.emsi.ebankingbackend.enums.OperationType;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
 import org.emsi.ebankingbackend.repositories.BankAccountRepository;
 import org.emsi.ebankingbackend.repositories.CustomerRepository;
@@ -50,6 +52,16 @@ public class EbankingBackendApplication {
                 savingAccount.setCustomer(customer);
                 savingAccount.setInterestRate(4.5);
                 bankAccountRepository.save(savingAccount);
+            });
+            bankAccountRepository.findAll().forEach(acc -> {
+                for (int i = 0; i < 10; i++) {
+                    AccountOperation accountOperation = new AccountOperation();
+                    accountOperation.setOperationDate(new Date());
+                    accountOperation.setAmount(Math.random() * 12000);
+                    accountOperation.setType(Math.random() > .5 ? OperationType.DEBIT : OperationType.CREDIT);
+                    accountOperation.setBankAccount(acc);
+                    accountOperationRepository.save(accountOperation);
+                }
             });
 
 
