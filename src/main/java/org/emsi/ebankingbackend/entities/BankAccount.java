@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "TYPE", length = 4)
 public abstract class BankAccount {
     @Id
