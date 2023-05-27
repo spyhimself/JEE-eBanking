@@ -1,13 +1,17 @@
 package org.emsi.ebankingbackend.services;
 
 import org.emsi.ebankingbackend.entities.BankAccount;
+import org.emsi.ebankingbackend.entities.CurrentAccount;
 import org.emsi.ebankingbackend.entities.Customer;
+import org.emsi.ebankingbackend.entities.SavingAccount;
+import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 
 import java.util.List;
 
 public interface BankAccountService {
     Customer saveCustomer(Customer customer);
-    BankAccount saveBankAccount(double initialBalance, String type, Long customerId);
+    CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
+    SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
     List<Customer> listCustomer();
     BankAccount getBankAccount(String accountId);
     void debit(String accountId, double amount, String description);
