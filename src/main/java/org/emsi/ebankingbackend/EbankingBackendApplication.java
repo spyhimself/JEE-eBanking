@@ -1,9 +1,6 @@
 package org.emsi.ebankingbackend;
 
-import org.emsi.ebankingbackend.entities.AccountOperation;
-import org.emsi.ebankingbackend.entities.CurrentAccount;
-import org.emsi.ebankingbackend.entities.Customer;
-import org.emsi.ebankingbackend.entities.SavingAccount;
+import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.AccountStatus;
 import org.emsi.ebankingbackend.enums.OperationType;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
@@ -24,7 +21,34 @@ public class EbankingBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(EbankingBackendApplication.class, args);
     }
+
     @Bean
+    CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository) {
+        return args -> {
+            BankAccount bankAccount =
+                    bankAccountRepository.findById("151f0382-758b-4dc3-b42a-a1e97a9b2a41").orElse(null);
+            if(bankAccount != null) {
+                System.out.println("**************************************");
+                System.out.println(bankAccount.getId());
+                System.out.println(bankAccount.getBalance());
+                System.out.println(bankAccount.getAccountStatus());
+                System.out.println(bankAccount.getCreatedAt());
+                System.out.println(bankAccount.getCustomer().getName());
+                System.out.println(bankAccount.getClass().getSimpleName());
+                if (bankAccount instanceof CurrentAccount)
+                    System.out.println(((CurrentAccount) bankAccount).getOverDraft());
+                else
+                    System.out.println(((SavingAccount) bankAccount).getInterestRate());
+
+                bankAccount.getAccountOperations().forEach(
+                        op -> {
+                            System.out.println(op.getType() + "\t" + op.getAmount() + "\t" + op.getOperationDate());
+                        }
+                );
+            }
+        };
+    }
+//    @Bean
     CommandLineRunner start(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository,
                             AccountOperationRepository accountOperationRepository) {
         return args -> {
@@ -62,8 +86,8 @@ public class EbankingBackendApplication {
                     accountOperation.setBankAccount(acc);
                     accountOperationRepository.save(accountOperation);
                 }
-            });
 
+            });
 
         };
     }
