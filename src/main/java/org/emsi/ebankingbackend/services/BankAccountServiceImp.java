@@ -1,5 +1,6 @@
 package org.emsi.ebankingbackend.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.emsi.ebankingbackend.entities.BankAccount;
 import org.emsi.ebankingbackend.entities.Customer;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class BankAccountServiceImp implements BankAccountService {
     private CustomerRepository customerRepository;
     private BankAccountRepository bankAccountRepository;
@@ -24,9 +26,6 @@ public class BankAccountServiceImp implements BankAccountService {
         this.bankAccountRepository = bankAccountRepository;
         this.accountOperationRepository = accountOperationRepository;
     }
-
-    Logger log = LoggerFactory.getLogger(this.getClass().getName());
-
 
     @Override
     public Customer saveCustomer(Customer customer) {
