@@ -5,6 +5,7 @@ import org.emsi.ebankingbackend.entities.BankAccount;
 import org.emsi.ebankingbackend.entities.CurrentAccount;
 import org.emsi.ebankingbackend.entities.Customer;
 import org.emsi.ebankingbackend.entities.SavingAccount;
+import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
 import org.emsi.ebankingbackend.repositories.BankAccountRepository;
@@ -71,12 +72,15 @@ public class BankAccountServiceImp implements BankAccountService {
 
     @Override
     public List<Customer> listCustomer() {
-        return null;
+        return customerRepository.findAll();
     }
 
     @Override
-    public BankAccount getBankAccount(String accountId) {
-        return null;
+    public BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException {
+        BankAccount bankAccount = bankAccountRepository.findById(accountId).orElseThrow(
+                () -> new BankAccountNotFoundException("BankAccount not found")
+        );
+        return bankAccount;
     }
 
     @Override
