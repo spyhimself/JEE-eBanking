@@ -4,6 +4,7 @@ import org.emsi.ebankingbackend.entities.BankAccount;
 import org.emsi.ebankingbackend.entities.CurrentAccount;
 import org.emsi.ebankingbackend.entities.Customer;
 import org.emsi.ebankingbackend.entities.SavingAccount;
+import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
 import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 
@@ -15,8 +16,8 @@ public interface BankAccountService {
     SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
     List<Customer> listCustomer();
     BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException;
-    void debit(String accountId, double amount, String description);
-    void credit(String accountId, double amount, String description);
+    void debit(String accountId, double amount, String description) throws BalanceNotSufficientException, BankAccountNotFoundException;
+    void credit(String accountId, double amount, String description) throws BankAccountNotFoundException;
     void transfer(String accountIdSource, String accountIdDest, double amount);
 
 }

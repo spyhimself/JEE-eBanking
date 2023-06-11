@@ -1,10 +1,9 @@
 package org.emsi.ebankingbackend.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.emsi.ebankingbackend.entities.BankAccount;
-import org.emsi.ebankingbackend.entities.CurrentAccount;
-import org.emsi.ebankingbackend.entities.Customer;
-import org.emsi.ebankingbackend.entities.SavingAccount;
+import org.emsi.ebankingbackend.entities.*;
+import org.emsi.ebankingbackend.enums.OperationType;
+import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
 import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
@@ -84,12 +83,33 @@ public class BankAccountServiceImp implements BankAccountService {
     }
 
     @Override
-    public void debit(String accountId, double amount, String description) {
-
+    public void debit(String accountId, double amount, String description) throws BalanceNotSufficientException, BankAccountNotFoundException {
+        BankAccount bankAccount = getBankAccount(accountId);
+        if(bankAccount.getBalance() < amount)
+            throw new BalanceNotSufficientException("Balance not sufficient");
+        AccountOperation accountOperation = new AccountOperation();
+        accountOperation.setType(OperationType.DEBIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setOperationDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+        accountOperationRepository.save(accountOperation);
+        bankAccount.setBalance(bankAccount.getBalance() - amount);
+        bankAccountRepository.save(bankAccount);
     }
 
     @Override
-    public void credit(String accountId, double amount, String description) {
+    public void credit(String accountId, double amount, String description) throws BankAccountNotFoundException {
+        BankAccount bankAccount = getBankAccount(accountId);
+        AccountOperation accountOperation = new AccountOperation();
+        accountOperation.setType(OperationType.CREDIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setOperationDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+        accountOperationRepository.save(accountOperation);
+        bankAccount.setBalance(bankAccount.getBalance() + amount);
+        bankAccountRepository.save(bankAccount);
 
     }
 
