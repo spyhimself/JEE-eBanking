@@ -3,15 +3,20 @@ package org.emsi.ebankingbackend;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.AccountStatus;
 import org.emsi.ebankingbackend.enums.OperationType;
+import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
+import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
+import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
 import org.emsi.ebankingbackend.repositories.BankAccountRepository;
 import org.emsi.ebankingbackend.repositories.CustomerRepository;
+import org.emsi.ebankingbackend.services.BankAccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -23,31 +28,57 @@ public class EbankingBackendApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository) {
+    CommandLineRunner commandLineRunner(BankAccountService bankAccountService) {
         return args -> {
-            BankAccount bankAccount =
-                    bankAccountRepository.findById("151f0382-758b-4dc3-b42a-a1e97a9b2a41").orElse(null);
-            if(bankAccount != null) {
-                System.out.println("**************************************");
-                System.out.println(bankAccount.getId());
-                System.out.println(bankAccount.getBalance());
-                System.out.println(bankAccount.getAccountStatus());
-                System.out.println(bankAccount.getCreatedAt());
-                System.out.println(bankAccount.getCustomer().getName());
-                System.out.println(bankAccount.getClass().getSimpleName());
-                if (bankAccount instanceof CurrentAccount)
-                    System.out.println(((CurrentAccount) bankAccount).getOverDraft());
-                else
-                    System.out.println(((SavingAccount) bankAccount).getInterestRate());
+            Stream.of("Hasser", "Imane", "Mohammed").forEach(
+                    name -> {
+                        Customer customer = new Customer();
+                        customer.setName(name);
+                        customer.setEmail(name + "@mail.com");
+                        bankAccountService.saveCustomer(customer);
+                    });
 
-                bankAccount.getAccountOperations().forEach(
-                        op -> {
-                            System.out.println(op.getType() + "\t" + op.getAmount() + "\t" + op.getOperationDate());
-                        }
-                );
-            }
+            bankAccountService.listCustomer().forEach(customer -> {
+                try {
+                    bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
+                    bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, customer.getId());
+                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
+                    for (BankAccount bankAccount : bankAccounts) {
+                        for (int i = 0; i < 10; i++)
+                            bankAccountService.credit(bankAccount.getId(), 10000 + Math.random() * 120000, "Credit");
+                            bankAccountService.debit(bankAccount.getId(), 1000 + Math.random() * 9000, "Debit");
+
+                }
+            } catch (BankAccountNotFoundException | BalanceNotSufficientException e) {
+                    e.printStackTrace();
+                } catch (CustomerNotFoundException e) {
+                    e.printStackTrace();
+                }
+                });
+
+//            BankAccount bankAccount =
+//                    bankAccountRepository.findById("151f0382-758b-4dc3-b42a-a1e97a9b2a41").orElse(null);
+//            if(bankAccount != null) {
+//                System.out.println("**************************************");
+//                System.out.println(bankAccount.getId());
+//                System.out.println(bankAccount.getBalance());
+//                System.out.println(bankAccount.getAccountStatus());
+//                System.out.println(bankAccount.getCreatedAt());
+//                System.out.println(bankAccount.getCustomer().getName());
+//                System.out.println(bankAccount.getClass().getSimpleName());
+//                if (bankAccount instanceof CurrentAccount)
+//                    System.out.println(((CurrentAccount) bankAccount).getOverDraft());
+//                else
+//                    System.out.println(((SavingAccount) bankAccount).getInterestRate());
+//
+//                bankAccount.getAccountOperations().forEach(
+//                        op -> {
+//                            System.out.println(op.getType() + "\t" + op.getAmount() + "\t" + op.getOperationDate());
+//                        }
+//                );
+            };
         };
-    }
+
 //    @Bean
     CommandLineRunner start(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository,
                             AccountOperationRepository accountOperationRepository) {

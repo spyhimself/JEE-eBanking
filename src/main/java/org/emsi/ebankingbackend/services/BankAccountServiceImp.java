@@ -9,8 +9,6 @@ import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
 import org.emsi.ebankingbackend.repositories.BankAccountRepository;
 import org.emsi.ebankingbackend.repositories.CustomerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,7 +115,10 @@ public class BankAccountServiceImp implements BankAccountService {
     public void transfer(String accountIdSource, String accountIdDest, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException {
         debit(accountIdSource, amount, "Transfer to " + accountIdDest);
         credit(accountIdDest, amount, "Transfer from " + accountIdSource);
+    }
 
-
+    @Override
+    public List<BankAccount> bankAccountList() {
+        return bankAccountRepository.findAll();
     }
 }
