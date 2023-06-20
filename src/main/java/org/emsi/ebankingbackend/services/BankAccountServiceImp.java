@@ -1,11 +1,13 @@
 package org.emsi.ebankingbackend.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.emsi.ebankingbackend.dtos.CustomerDTO;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.OperationType;
 import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
 import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
+import org.emsi.ebankingbackend.mappers.BankAccountMapperImpl;
 import org.emsi.ebankingbackend.repositories.AccountOperationRepository;
 import org.emsi.ebankingbackend.repositories.BankAccountRepository;
 import org.emsi.ebankingbackend.repositories.CustomerRepository;
@@ -15,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -23,6 +27,7 @@ public class BankAccountServiceImp implements BankAccountService {
     private CustomerRepository customerRepository;
     private BankAccountRepository bankAccountRepository;
     private AccountOperationRepository accountOperationRepository;
+    private BankAccountMapperImpl dtoMapper;
 
     public BankAccountServiceImp(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository, AccountOperationRepository accountOperationRepository) {
         this.customerRepository = customerRepository;
@@ -68,8 +73,10 @@ public class BankAccountServiceImp implements BankAccountService {
 
 
     @Override
-    public List<Customer> listCustomer() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> listCustomer() {
+        List<Customer> customers = customerRepository.findAll();
+        Stream<CustomerDTO> customerDTOStream = customers.stream().map(customer -> dtoMapper.fromCustomer(customer));
+        return Collectors.toList(customerDTOStream);
     }
 
     @Override
