@@ -2,9 +2,11 @@ package org.emsi.ebankingbackend.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.emsi.ebankingbackend.dtos.CustomerDTO;
 import org.emsi.ebankingbackend.entities.Customer;
 import org.emsi.ebankingbackend.services.BankAccountService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,7 +18,12 @@ public class CustomerRestController {
     private BankAccountService bankAccountService;
 
     @GetMapping("/customers")
-    public List<Customer> customers() {
+    public List<CustomerDTO> customers() {
         return bankAccountService.listCustomer();
+    }
+    @GetMapping("/customer/{id}")
+    public CustomerDTO getCustomer(@PathVariable(name = "id") Long customerId) {
+
+
     }
 }

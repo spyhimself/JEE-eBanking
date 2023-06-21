@@ -22,4 +22,6 @@ public interface BankAccountService {
     void transfer(String accountIdSource, String accountIdDest, double amount) throws BankAccountNotFoundException, BalanceNotSufficientException;
 
     List<BankAccount> bankAccountList();
+
+    CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException;
 }
