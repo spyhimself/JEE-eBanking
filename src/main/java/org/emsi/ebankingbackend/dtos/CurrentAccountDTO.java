@@ -7,7 +7,7 @@ import org.emsi.ebankingbackend.enums.AccountStatus;
 import java.util.Date;
 
 @Data
-public class CurrentAccountDTO {
+public class CurrentAccountDTO extends BankAccountDTO {
     @Id
     private String id;
     private double balance;
