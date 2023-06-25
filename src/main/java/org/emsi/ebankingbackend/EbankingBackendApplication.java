@@ -1,5 +1,6 @@
 package org.emsi.ebankingbackend;
 
+import org.emsi.ebankingbackend.dtos.CustomerDTO;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.AccountStatus;
 import org.emsi.ebankingbackend.enums.OperationType;
@@ -32,10 +33,10 @@ public class EbankingBackendApplication {
         return args -> {
             Stream.of("Hasser", "Imane", "Mohammed").forEach(
                     name -> {
-                        Customer customer = new Customer();
-                        customer.setName(name);
-                        customer.setEmail(name + "@mail.com");
-                        bankAccountService.saveCustomer(customer);
+                        CustomerDTO customerDTO = new CustomerDTO();
+                        customerDTO.setName(name);
+                        customerDTO.setEmail(name + "@mail.com");
+                        bankAccountService.saveCustomer(customerDTO);
                     });
 
             bankAccountService.listCustomer().forEach(customer -> {
