@@ -171,4 +171,5 @@ public class BankAccountServiceImpl implements BankAccountService {
     public void deleteCustomer(Long customerId) {
         customerRepository.deleteById(customerId);
     }
+
 }

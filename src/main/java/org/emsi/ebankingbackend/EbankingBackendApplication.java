@@ -1,7 +1,9 @@
 package org.emsi.ebankingbackend;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import org.emsi.ebankingbackend.dtos.BankAccountDTO;
+import org.emsi.ebankingbackend.dtos.CurrentAccountDTO;
 import org.emsi.ebankingbackend.dtos.CustomerDTO;
+import org.emsi.ebankingbackend.dtos.SavingAccountDTO;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.AccountStatus;
 import org.emsi.ebankingbackend.enums.OperationType;
@@ -44,11 +46,18 @@ public class EbankingBackendApplication {
                 try {
                     bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
                     bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, customer.getId());
-                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
-                    for (BankAccount bankAccount : bankAccounts) {
-                        for (int i = 0; i < 10; i++)
-                            bankAccountService.credit(bankAccount.getId(), 10000 + Math.random() * 120000, "Credit");
-                            bankAccountService.debit(bankAccount.getId(), 1000 + Math.random() * 9000, "Debit");
+                    List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
+                    for (BankAccountDTO bankAccountDTO : bankAccounts) {
+                        for (int i = 0; i < 10; i++) {
+                            String accountId;
+                            if (bankAccountDTO instanceof SavingAccountDTO) {
+                                accountId = ((SavingAccountDTO) bankAccountDTO).getId();
+                            } else {
+                                accountId = ((CurrentAccountDTO) bankAccountDTO).getId();
+                            }
+                            bankAccountService.credit(accountId, 10000 + Math.random() * 120000, "Credit");
+                            bankAccountService.debit(accountId, 1000 + Math.random() * 9000, "Debit");
+                        }
 
                 }
             } catch (BankAccountNotFoundException | BalanceNotSufficientException e) {
@@ -57,29 +66,8 @@ public class EbankingBackendApplication {
                     e.printStackTrace();
                 }
                 });
-
-//            BankAccount bankAccount =
-//                    bankAccountRepository.findById("151f0382-758b-4dc3-b42a-a1e97a9b2a41").orElse(null);
-//            if(bankAccount != null) {
-//                System.out.println("**************************************");
-//                System.out.println(bankAccount.getId());
-//                System.out.println(bankAccount.getBalance());
-//                System.out.println(bankAccount.getAccountStatus());
-//                System.out.println(bankAccount.getCreatedAt());
-//                System.out.println(bankAccount.getCustomer().getName());
-//                System.out.println(bankAccount.getClass().getSimpleName());
-//                if (bankAccount instanceof CurrentAccount)
-//                    System.out.println(((CurrentAccount) bankAccount).getOverDraft());
-//                else
-//                    System.out.println(((SavingAccount) bankAccount).getInterestRate());
-//
-//                bankAccount.getAccountOperations().forEach(
-//                        op -> {
-//                            System.out.println(op.getType() + "\t" + op.getAmount() + "\t" + op.getOperationDate());
-//                        }
-//                );
             };
-        };
+        }
 
 //    @Bean
     CommandLineRunner start(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository,
