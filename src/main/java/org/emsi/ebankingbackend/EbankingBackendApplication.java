@@ -1,5 +1,6 @@
 package org.emsi.ebankingbackend;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.emsi.ebankingbackend.dtos.CustomerDTO;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.AccountStatus;
