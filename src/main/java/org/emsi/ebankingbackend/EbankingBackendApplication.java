@@ -46,26 +46,29 @@ public class EbankingBackendApplication {
                 try {
                     bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
                     bankAccountService.saveSavingBankAccount(Math.random() * 120000, 5.5, customer.getId());
-                    List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
-                    for (BankAccountDTO bankAccountDTO : bankAccounts) {
-                        for (int i = 0; i < 10; i++) {
-                            String accountId;
-                            if (bankAccountDTO instanceof SavingAccountDTO) {
-                                accountId = ((SavingAccountDTO) bankAccountDTO).getId();
-                            } else {
-                                accountId = ((CurrentAccountDTO) bankAccountDTO).getId();
-                            }
-                            bankAccountService.credit(accountId, 10000 + Math.random() * 120000, "Credit");
-                            bankAccountService.debit(accountId, 1000 + Math.random() * 9000, "Debit");
-                        }
 
-                }
-            } catch (BankAccountNotFoundException | BalanceNotSufficientException e) {
-                    e.printStackTrace();
-                } catch (CustomerNotFoundException e) {
+            } catch (CustomerNotFoundException e) {
                     e.printStackTrace();
                 }
                 });
+            List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
+            for (BankAccountDTO bankAccountDTO : bankAccounts) {
+                for (int i = 0; i < 10; i++) {
+                    String accountId;
+                    if (bankAccountDTO instanceof SavingAccountDTO) {
+                        accountId = ((SavingAccountDTO) bankAccountDTO).getId();
+                    } else {
+                        accountId = ((CurrentAccountDTO) bankAccountDTO).getId();
+                    }
+                    try {
+                        bankAccountService.credit(accountId, 10000 + Math.random() * 120000, "Credit");
+                        bankAccountService.debit(accountId, 1000 + Math.random() * 9000, "Debit");
+                    } catch (BalanceNotSufficientException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+            }
             };
         }
 

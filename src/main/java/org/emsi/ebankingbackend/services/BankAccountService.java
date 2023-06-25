@@ -1,9 +1,6 @@
 package org.emsi.ebankingbackend.services;
 
-import org.emsi.ebankingbackend.dtos.BankAccountDTO;
-import org.emsi.ebankingbackend.dtos.CurrentAccountDTO;
-import org.emsi.ebankingbackend.dtos.CustomerDTO;
-import org.emsi.ebankingbackend.dtos.SavingAccountDTO;
+import org.emsi.ebankingbackend.dtos.*;
 import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
 import org.emsi.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.emsi.ebankingbackend.exceptions.CustomerNotFoundException;
@@ -28,4 +25,8 @@ public interface BankAccountService {
     CustomerDTO updateCustomer(CustomerDTO customerDTO);
 
     void deleteCustomer(Long customerId);
+
+    List<AccountOperationDTO> accountHistory(String accountId);
+
+    AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
 }
