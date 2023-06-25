@@ -2,7 +2,9 @@ package org.emsi.ebankingbackend.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.emsi.ebankingbackend.dtos.CurrentAccountDTO;
 import org.emsi.ebankingbackend.dtos.CustomerDTO;
+import org.emsi.ebankingbackend.dtos.SavingAccountDTO;
 import org.emsi.ebankingbackend.entities.*;
 import org.emsi.ebankingbackend.enums.OperationType;
 import org.emsi.ebankingbackend.exceptions.BalanceNotSufficientException;
@@ -39,7 +41,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException {
+    public CurrentAccountDTO saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElse(null);
         CurrentAccount currentAccount = new CurrentAccount();
         if (customer == null)
@@ -49,12 +51,12 @@ public class BankAccountServiceImpl implements BankAccountService {
         currentAccount.setBalance(initialBalance);
         currentAccount.setCustomer(customer);
         currentAccount.setOverDraft(overDraft);
-
-        return bankAccountRepository.save(currentAccount);
+        CurrentAccount savedCurrentAccount = bankAccountRepository.save(currentAccount);
+        return dtoMapper.fromCurrentAccount(savedCurrentAccount);
     }
 
     @Override
-    public SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException {
+    public SavingAccountDTO saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElse(null);
         SavingAccount savingAccount = new SavingAccount();
         if (customer == null)
@@ -64,8 +66,8 @@ public class BankAccountServiceImpl implements BankAccountService {
         savingAccount.setBalance(initialBalance);
         savingAccount.setCustomer(customer);
         savingAccount.setInterestRate(interestRate);
-
-        return bankAccountRepository.save(savingAccount);
+        SavingAccount savedSavingAccount = bankAccountRepository.save(savingAccount);
+        return dtoMapper.fromSavingAccount(savedSavingAccount);
     }
 
 
