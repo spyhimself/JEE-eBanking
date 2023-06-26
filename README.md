@@ -111,7 +111,7 @@ The JEE-eBanking project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For any questions or inquiries, please contact the project maintainer: [your-email@example.com](mailto:tararayman@gmail.com).
+For any questions or inquiries, please contact the project maintainer: [my e-mail](mailto:tararayman7@gmail.com).
 ```
 
 Please note that you may need to modify the instructions in the Angular and Spring Boot sections if your project structure or setup differs from the assumptions made in the README
