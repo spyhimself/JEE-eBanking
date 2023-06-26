@@ -93,6 +93,10 @@ The `docs` directory contains additional documentation for the project, includin
 - `database_design.md`: Describes the database design and schema.
 - `user_guide.md`: A user guide for using the JEE-eBanking application.
 
+## Project Report
+
+For a detailed overview of the project, please refer to the [Project Report](https://docs.google.com/document/d/1fEcciIKeUQ1fUNL1orZhFtNt1AwjxhdWxo9YEWaDYRU/edit?usp=sharing).
+
 ## Contributing
 
 Contributions are welcome! If you would like to contribute to this project, please follow these steps:
